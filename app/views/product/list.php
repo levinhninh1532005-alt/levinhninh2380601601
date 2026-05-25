@@ -144,34 +144,67 @@
                 </div>
 
                 <!-- FOOTER -->
-                <div class="card-footer bg-white border-0 pb-4">
+<div class="card-footer bg-white border-0 pb-4">
 
-                    <a href="/project1/Product/show/<?php echo $product->id; ?>"
-                    class="btn btn-success">
+<!-- FORM ADD TO CART -->
+<form action="/project1/Product/addToCart/<?php echo $product->id; ?>"
+      method="POST"
+      class="mb-3">
 
-                        <i class="fa-solid fa-eye"></i>
-                        Xem
+    <div class="d-flex gap-2">
 
-                    </a>
+        <!-- SỐ LƯỢNG -->
+        <input type="number"
+               name="quantity"
+               value="1"
+               min="1"
+               class="form-control"
+               style="width:90px;">
 
-                    <a href="/project1/Product/edit/<?php echo $product->id; ?>"
-                    class="btn btn-primary">
+        <!-- ADD TO CART -->
+        <button type="submit"
+                class="btn btn-warning flex-grow-1">
 
-                        <i class="fa-solid fa-pen"></i>
-                        Sửa
+            <i class="fa-solid fa-cart-shopping"></i>
+            Thêm giỏ hàng
 
-                    </a>
+        </button>
 
-                    <a href="/project1/Product/delete/<?php echo $product->id; ?>"
-                    class="btn btn-danger"
-                    onclick="return confirm('Bạn có chắc muốn xóa?')">
+    </div>
 
-                        <i class="fa-solid fa-trash"></i>
-                        Xóa
+</form>
 
-                    </a>
+<!-- ACTION BUTTON -->
+<div class="d-flex gap-2 flex-wrap">
 
-                </div>
+    <a href="/project1/Product/show/<?php echo $product->id; ?>"
+    class="btn btn-success">
+
+        <i class="fa-solid fa-eye"></i>
+        Xem
+
+    </a>
+
+    <a href="/project1/Product/edit/<?php echo $product->id; ?>"
+    class="btn btn-primary">
+
+        <i class="fa-solid fa-pen"></i>
+        Sửa
+
+    </a>
+
+    <a href="/project1/Product/delete/<?php echo $product->id; ?>"
+    class="btn btn-danger"
+    onclick="return confirm('Bạn có chắc muốn xóa?')">
+
+        <i class="fa-solid fa-trash"></i>
+        Xóa
+
+    </a>
+
+</div>
+
+</div>
 
             </div>
 

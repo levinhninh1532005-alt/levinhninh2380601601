@@ -125,8 +125,14 @@
                     </a>
                 </li>
                 <li class="nav-item">
-    <a class="nav-link" href="/project1/Cart/view">
+    <a class="nav-link" href="/project1/product/Cart/view">
         🛒 Giỏ hàng
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="/project1/Product/myOrders">
+        <i class="fa-solid fa-box"></i>
+        Đơn hàng của tôi
     </a>
 </li>
             </ul>
