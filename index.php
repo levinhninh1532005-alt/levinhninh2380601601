@@ -2,14 +2,11 @@
 
 session_start();
 date_default_timezone_set('Asia/Ho_Chi_Minh');
-require_once 'app/models/ProductModel.php';
+require_once 'app/helpers/auth_helper.php';
 
 $url = $_GET['url'] ?? '';
-
 $url = rtrim($url, '/');
-
 $url = filter_var($url, FILTER_SANITIZE_URL);
-
 $url = explode('/', $url);
 
 // CONTROLLER
@@ -22,23 +19,21 @@ $action = isset($url[1]) && $url[1] != ''
     ? $url[1]
     : 'index';
 
-// DEBUG
-// die("controller=$controllerName - action=$action");
-
 // KIỂM TRA CONTROLLER
-if (!file_exists('app/controllers/' . $controllerName . '.php')) {
-
-    die('Controller not found');
+$controllerFile = 'app/controllers/' . $controllerName . '.php';
+if (!file_exists($controllerFile)) {
+    http_response_code(404);
+    die('<h2>404 - Không tìm thấy trang: ' . htmlspecialchars($controllerName) . '</h2>');
 }
 
-require_once 'app/controllers/' . $controllerName . '.php';
+require_once $controllerFile;
 
 $controller = new $controllerName();
 
 // KIỂM TRA ACTION
 if (!method_exists($controller, $action)) {
-
-    die('Action not found');
+    http_response_code(404);
+    die('<h2>404 - Không tìm thấy hành động: ' . htmlspecialchars($action) . '</h2>');
 }
 
 // GỌI ACTION

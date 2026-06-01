@@ -87,21 +87,23 @@
                     <!-- BUTTONS -->
                     <div class="d-flex flex-wrap gap-3 mt-5">
 
-                        <a href="/project1/Product/addToCart/<?php echo $product->id; ?>"
-                        class="btn btn-success btn-lg px-4">
+                        <?php if (!$_isAdmin): ?>
+                        <form action="/project1/Product/addToCart/<?php echo $product->id; ?>" method="POST" class="d-inline">
+                            <input type="number" name="quantity" value="1" min="1" class="form-control d-inline" style="width:80px;">
+                            <button type="submit" class="btn btn-success btn-lg px-4 ms-2">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                Thêm vào giỏ hàng
+                            </button>
+                        </form>
+                        <?php endif; ?>
 
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            Thêm vào giỏ hàng
-
-                        </a>
-
+                        <?php if ($_isAdmin): ?>
                         <a href="/project1/Product/edit/<?php echo $product->id; ?>"
                         class="btn btn-primary btn-lg px-4">
-
                             <i class="fa-solid fa-pen"></i>
                             Sửa sản phẩm
-
                         </a>
+                        <?php endif; ?>
 
                         <a href="/project1/Product/list"
                         class="btn btn-outline-secondary btn-lg px-4">
