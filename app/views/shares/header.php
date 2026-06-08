@@ -82,6 +82,16 @@ $_curUser    = $_isLoggedIn ? currentUser() : null;
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="/project1/Admin/apiPlayground">
+                        <i class="fa-solid fa-bolt me-1"></i>API Playground
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/project1/Admin/products">
+                        <i class="fa-solid fa-box me-1"></i>Quản lý Sản phẩm
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/project1/Admin/users">
                         <i class="fa-solid fa-users-gear me-1"></i>Quản lý Users
                     </a>

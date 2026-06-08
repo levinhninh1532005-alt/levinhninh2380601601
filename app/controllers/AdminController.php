@@ -13,7 +13,19 @@ class AdminController {
         $this->accountModel = new AccountModel($this->db);
     }
 
-    // Trang quản lý người dùng
+    // Trang API Playground cho admin
+    public function apiPlayground() {
+        requireAdmin();
+        include 'app/views/admin/api_playground.php';
+    }
+
+    // Trang quản lý sản phẩm bằng jQuery + API
+    public function products() {
+        requireAdmin();
+        include 'app/views/admin/products.php';
+    }
+
+        // Trang quản lý người dùng
     public function users() {
         requireAdmin();
         $users   = $this->accountModel->getAllUsers();
