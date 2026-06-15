@@ -203,6 +203,17 @@
         <button class="api-nav-btn" onclick="apiLoadEp('delete-category')">
             <span class="bm bm-DELETE">DELETE</span> Xóa DM
         </button>
+
+        <div class="api-nav-group">Tài khoản</div>
+        <button class="api-nav-btn" onclick="apiLoadEp('post-login')">
+            <span class="bm bm-POST">POST</span> Đăng nhập
+        </button>
+        <button class="api-nav-btn" onclick="apiLoadEp('get-me')">
+            <span class="bm bm-GET">GET</span> Thông tin tài khoản
+        </button>
+        <button class="api-nav-btn" onclick="apiLoadEp('delete-logout')">
+            <span class="bm bm-DELETE">DELETE</span> Đăng xuất
+        </button>
     </div>
 
     <!-- ════ MAIN ════ -->
@@ -219,6 +230,21 @@
         <div class="api-panel" id="api-params-panel" style="display:none;">
             <div class="api-panel-title"><i class="fa-solid fa-link me-2"></i>URL Parameters</div>
             <div class="api-panel-body" id="api-params-body"></div>
+        </div>
+
+        <!-- Headers panel: Authorization Bearer token -->
+        <div class="api-panel" id="api-headers-panel" style="display:none;">
+            <div class="api-panel-title">
+                <span><i class="fa-solid fa-key me-2"></i>Headers</span>
+                <span style="font-size:.65rem;color:#94a3b8;">Token nhận được sau khi đăng nhập (POST /api/auth)</span>
+            </div>
+            <div class="api-panel-body">
+                <div class="field-row">
+                    <div class="field-label">Authorization <span class="field-badge">Bearer</span></div>
+                    <input type="text" class="form-control form-control-sm" id="api-header-auth"
+                           placeholder="Dán token nhận được từ Đăng nhập, hoặc bỏ trống để dùng session/cookie">
+                </div>
+            </div>
         </div>
 
         <!-- Body panel: JSON mode -->
@@ -362,6 +388,29 @@
             urlParams: [
                 { name: 'id', label: 'ID danh mục', placeholder: 'VD: 3', def: '' }
             ]
+        },
+
+        'post-login': {
+            method: 'POST', mode: 'json',
+            url: BASE + '/api/auth',
+            desc: 'Đăng nhập bằng username (hoặc email) + password. Trả về "token" (Bearer) và thông tin user. Dán "token" vào ô Authorization ở các endpoint Tài khoản khác để test.',
+            urlParams: [],
+            needsAuth: false,
+            jsonBody: JSON.stringify({ username: 'admin', password: 'password' }, null, 2)
+        },
+        'get-me': {
+            method: 'GET', mode: 'none',
+            url: BASE + '/api/auth',
+            desc: 'Lấy thông tin tài khoản đang đăng nhập. Cần header Authorization: Bearer <token> (hoặc session/cookie sau khi đăng nhập).',
+            urlParams: [],
+            needsAuth: true
+        },
+        'delete-logout': {
+            method: 'DELETE', mode: 'none',
+            url: BASE + '/api/auth/logout',
+            desc: 'Đăng xuất - huỷ token hiện tại và xoá session.',
+            urlParams: [],
+            needsAuth: true
         }
     };
 
@@ -399,6 +448,13 @@
             });
         } else {
             $('#api-params-panel').hide();
+        }
+
+        // Headers panel (Authorization Bearer)
+        if (ep.needsAuth) {
+            $('#api-headers-panel').show();
+        } else {
+            $('#api-headers-panel').hide();
         }
 
         // Hide all body panels
@@ -520,6 +576,13 @@
         $('#api-spinner').addClass('show');
         resetResponse();
 
+        // Header Authorization (Bearer token) nếu có nhập
+        var headers = {};
+        var authVal = $.trim($('#api-header-auth').val());
+        if (authVal) {
+            headers['Authorization'] = /^bearer\s/i.test(authVal) ? authVal : 'Bearer ' + authVal;
+        }
+
         if (ep.mode === 'form') {
             // ── FormData (hỗ trợ file) ──
             var fd = new FormData();
@@ -548,6 +611,7 @@
                 processData: false,
                 contentType: false,
                 dataType:    'text',
+                headers:     headers,
                 complete:    function (jqXHR) { handleResponse(jqXHR, Date.now() - t0); }
             });
 
@@ -568,6 +632,7 @@
                 contentType: 'application/json',
                 data:        bodyData,
                 dataType:    'text',
+                headers:     headers,
                 complete:    function (jqXHR) { handleResponse(jqXHR, Date.now() - t0); }
             });
 
@@ -577,6 +642,7 @@
                 url:      url,
                 method:   ep.method,
                 dataType: 'text',
+                headers:  headers,
                 complete: function (jqXHR) { handleResponse(jqXHR, Date.now() - t0); }
             });
         }
@@ -594,6 +660,14 @@
         $('#api-response-body')
             .text(pretty)
             .css('color', code < 300 ? '#a5f3fc' : '#fca5a5');
+
+        // Nếu response trả về token (đăng nhập), tự điền vào ô Authorization
+        try {
+            var parsedAuth = JSON.parse(bodyText);
+            if (parsedAuth && parsedAuth.token && code < 300) {
+                $('#api-header-auth').val(parsedAuth.token);
+            }
+        } catch (e) {}
 
         // Nếu response có image path, hiển thị preview
         try {
